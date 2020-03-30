@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/snake.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expende-lg navbar-dark bg-dark">
+        <a href="#" class="navbar-brand">Snake Game</a>
+        <div>
+            <!-- Start button -->
+            <button type="button" class="btn btn-primary">
+                <svg class="bi bi-play" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M10.804 8L5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 010 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z" clip-rule="evenodd"/>
+                </svg>
+            </button>
+
+            <!-- Restart button -->
+            <button type="button" class="btn btn-primary">
+                <svg class="bi bi-arrow-clockwise" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M3.17 6.706a5 5 0 017.103-3.16.5.5 0 10.454-.892A6 6 0 1013.455 5.5a.5.5 0 00-.91.417 5 5 0 11-9.375.789z" clip-rule="evenodd"/>
+                    <path fill-rule="evenodd" d="M8.147.146a.5.5 0 01.707 0l2.5 2.5a.5.5 0 010 .708l-2.5 2.5a.5.5 0 11-.707-.708L10.293 3 8.147.854a.5.5 0 010-.708z" clip-rule="evenodd"/>
+                  </svg>
+            </button>
+        </div>
+    </nav>
+    <!-- .Navbar -->
+
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center mt-5">
+            <canvas id="game" width="1000" height="400">This game just works with the javascript turned on</canvas>
+        </div>
+    </div>
+
+    <script src="./js/jquery.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/snake.js"></script>
+
+</body>
+</html>
