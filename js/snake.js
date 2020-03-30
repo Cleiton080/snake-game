@@ -3,6 +3,7 @@ class Snake {
         this.ctx = ctx;
         this.x = opt.x || 0;
         this.y = opt.y || 0;
+        this.score = 0;
         this.width = opt.width || 20,
         this.height = opt.height || 20;
         this.speed = opt.speed || 4;
@@ -18,8 +19,14 @@ class Snake {
     }
 
     eat(food) {
-        if(Math.abs((food.y + food.height) - (this.y + this.height)) <= food.height && Math.abs((food.x + food.width) - (this.x + this.width)) <= food.width)
-            console.log('ate')
+        if(Math.abs((food.y + food.height) - (this.y + this.height)) <= food.height && Math.abs((food.x + food.width) - (this.x + this.width)) <= food.width) {
+            this.score++;
+            this.speed += 0.1;
+            food.x = Math.floor(Math.random() * this.ctx.canvas.width);
+            food.y = Math.floor(Math.random() * this.ctx.canvas.height);
+            console.log(`Score: ${this.score}`);
+            console.log(`Speed: ${this.speed}`);
+        }
     }
 }
 
