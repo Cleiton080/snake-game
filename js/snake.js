@@ -8,14 +8,33 @@ class Snake {
         this.height = opt.height || 20;
         this.speed = opt.speed || 4;
         this.color = opt.color || "#000";
+        this.tail = [];
     }
 
     draw() {
         this.ctx.beginPath();
-        this.ctx.rect(this.x, this.y, this.width, this.height);
-        this.ctx.fillStyle = this.color;
-        this.ctx.fill();
-        this.ctx.closePath();
+        
+        // Draw snake' head
+        this.ctx.fillRect(this.x, this.y, this.width, this.height);
+        this.ctx.fillStyle = "#000";
+        
+        // Draw snake' tail
+        for(let tail of this.tail) {
+            this.ctx.fillRect(tail.x, tail.y, this.width, this.height);
+            this.ctx.fillStyle = "#000";
+        }
+
+        this.ctx.closePath();    
+    }
+
+    move() {
+        if(this.tail.length >= 1) {
+            this.tail.pop();
+            this.tail.unshift({
+                x: this.x,
+                y: this.y
+            });
+        }
     }
 
     eat(food) {
@@ -42,9 +61,8 @@ class Food {
 
     draw() {
         this.ctx.beginPath();
-        this.ctx.rect(this.x, this.y, this.width, this.height);
+        this.ctx.fillRect(this.x, this.y, this.width, this.height);
         this.ctx.fillStyle = this.color;
-        this.ctx.fill();
         this.ctx.closePath();
     }
 }
@@ -81,6 +99,10 @@ class Keyboard {
     }
 
     move(caracter) {
+
+        if(typeof caracter.move === "function")
+            caracter.move();
+        
         if(this.up)
             caracter.y -= caracter.speed;
         if(this.down)
@@ -110,8 +132,13 @@ class Keyboard {
     let ctx = document.getElementById("game").getContext("2d");
 
     const keyboard = new Keyboard();
-    const snake = new Snake(ctx);
-    const food = new Food(ctx);
+    const snake = new Snake(ctx, {
+        x: 0,
+        y: 0
+    });
+    const food = new Food(ctx, {
+        x: 100
+    });
 
     keyboard.init();
 
@@ -122,9 +149,10 @@ class Keyboard {
     }
     
     function loop() {
-        draw();
         snake.eat(food);
         keyboard.move(snake);
+        draw();
+
         requestAnimationFrame(loop);
     }
 
