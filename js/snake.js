@@ -78,26 +78,36 @@ class Keyboard {
         this.down = false;
         this.right = false;
         this.left = false;
+        this.keys = {
+            up: "w",
+            down: "s",
+            left: "a",
+            right: "d"
+        };
+    }
+
+    keyPressed(key, opositeKey) {
+        if(!this[opositeKey]) {
+            this.unpressKeys();
+            this[key] = true;
+        }
     }
 
     init() {
         document.addEventListener("keypress", (event) => {
+            const {up, down, left, right} = this.keys;
             switch(event.key) {
-                case this.getKeys().up:
-                    this.unpressKeys();
-                    this.up = true;
+                case up:
+                    this.keyPressed("up", "down");
                     break;
-                case this.getKeys().down:
-                    this.unpressKeys();
-                    this.down = true;
+                case down:
+                    this.keyPressed("down", "up");
                     break;
-                case this.getKeys().left:
-                    this.unpressKeys();
-                    this.left = true;
+                case left:
+                    this.keyPressed("left", "right");
                     break;
-                case this.getKeys().right:
-                    this.unpressKeys();
-                    this.right = true;
+                case right:
+                    this.keyPressed("right", "left");
                     break;
             }
         });
@@ -120,15 +130,6 @@ class Keyboard {
 
     unpressKeys() {
         this.up = this.down = this.right = this.left = false;
-    }
-
-    getKeys() {
-        return {
-            up: "w",
-            down: "s",
-            left: "a",
-            right: "d"
-        };
     }
 }
 
