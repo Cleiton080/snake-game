@@ -43,6 +43,10 @@ class Snake {
             this.speed += 0.1;
             food.x = Math.floor(Math.random() * this.ctx.canvas.width);
             food.y = Math.floor(Math.random() * this.ctx.canvas.height);
+            this.tail.unshift({
+                x: this.x,
+                y: this.y
+            });
             console.log(`Score: ${this.score}`);
             console.log(`Speed: ${this.speed}`);
         }
