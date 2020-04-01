@@ -15,15 +15,15 @@ class Snake {
         this.ctx.beginPath();
         
         // Draw snake' head
-        this.ctx.fillRect(this.x, this.y, this.width, this.height);
-        this.ctx.fillStyle = "#000";
+        this.ctx.rect(this.x, this.y, this.width, this.height);
         
         // Draw snake' tail
-        for(let tail of this.tail) {
-            this.ctx.fillRect(tail.x, tail.y, this.width, this.height);
-            this.ctx.fillStyle = "#000";
-        }
-
+        for(let tail of this.tail)
+            this.ctx.rect(tail.x, tail.y, this.width, this.height);
+        
+        this.ctx.fillStyle = this.color;
+        this.ctx.fill();
+        
         this.ctx.closePath();    
     }
 
@@ -65,8 +65,9 @@ class Food {
 
     draw() {
         this.ctx.beginPath();
-        this.ctx.fillRect(this.x, this.y, this.width, this.height);
+        this.ctx.rect(this.x, this.y, this.width, this.height);
         this.ctx.fillStyle = this.color;
+        this.ctx.fill();
         this.ctx.closePath();
     }
 }
