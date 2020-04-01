@@ -1,3 +1,5 @@
+const randomInt = (max) => Math.floor(Math.random() * max);
+
 class Snake {
     constructor(ctx, opt = {}) {
         this.ctx = ctx;
@@ -41,8 +43,8 @@ class Snake {
         if(Math.abs((food.y + food.height) - (this.y + this.height)) <= food.height && Math.abs((food.x + food.width) - (this.x + this.width)) <= food.width) {
             this.score++;
             this.speed += 0.1;
-            food.x = Math.floor(Math.random() * this.ctx.canvas.width);
-            food.y = Math.floor(Math.random() * this.ctx.canvas.height);
+            food.x = randomInt(this.ctx.canvas.width);
+            food.y = randomInt(this.ctx.canvas.height);
             this.tail.unshift({
                 x: this.x,
                 y: this.y
@@ -56,8 +58,8 @@ class Snake {
 class Food {
     constructor(ctx, opt = {}) {
         this.ctx = ctx;
-        this.x = opt.x || 0;
-        this.y = opt.y || 0;
+        this.x = opt.x || randomInt(this.ctx.canvas.width);
+        this.y = opt.y || randomInt(this.ctx.canvas.height);
         this.width = opt.width || 20;
         this.height = opt.height || 20;
         this.color = opt.color || "red";
@@ -74,10 +76,8 @@ class Food {
 
 class Keyboard {
     constructor() {
-        this.up = false;
-        this.down = false;
-        this.right = false;
-        this.left = false;
+        this.up = this.down = this.left = false;
+        this.right = true;
         this.keys = {
             up: "w",
             down: "s",
@@ -97,40 +97,28 @@ class Keyboard {
         document.addEventListener("keypress", (event) => {
             const {up, down, left, right} = this.keys;
             switch(event.key) {
-                case up:
-                    this.keyPressed("up", "down");
-                    break;
-                case down:
-                    this.keyPressed("down", "up");
-                    break;
-                case left:
-                    this.keyPressed("left", "right");
-                    break;
-                case right:
-                    this.keyPressed("right", "left");
-                    break;
+                case up: this.keyPressed("up", "down"); break;
+                case down: this.keyPressed("down", "up"); break;
+                case left: this.keyPressed("left", "right"); break;
+                case right: this.keyPressed("right", "left"); break;
             }
         });
     }
 
     move(caracter) {
 
-        if(typeof caracter.move === "function")
-            caracter.move();
+        if(typeof caracter.move === "function") caracter.move();
         
-        if(this.up)
-            caracter.y -= caracter.speed;
-        if(this.down)
-            caracter.y += caracter.speed;
-        if(this.right)
-            caracter.x += caracter.speed;
-        if(this.left)
-            caracter.x -= caracter.speed;
+        if(this.up) caracter.y -= caracter.speed;
+
+        if(this.down) caracter.y += caracter.speed;
+        
+        if(this.right) caracter.x += caracter.speed;
+        
+        if(this.left) caracter.x -= caracter.speed;
     }
 
-    unpressKeys() {
-        this.up = this.down = this.right = this.left = false;
-    }
+    unpressKeys() { this.up = this.down = this.right = this.left = false; }
 }
 
 (function() {
@@ -138,13 +126,8 @@ class Keyboard {
     let ctx = document.getElementById("game").getContext("2d");
 
     const keyboard = new Keyboard();
-    const snake = new Snake(ctx, {
-        x: 0,
-        y: 0
-    });
-    const food = new Food(ctx, {
-        x: 100
-    });
+    const snake = new Snake(ctx);
+    const food = new Food(ctx);
 
     keyboard.init();
 
@@ -158,7 +141,6 @@ class Keyboard {
         snake.eat(food);
         keyboard.move(snake);
         draw();
-
         requestAnimationFrame(loop);
     }
 
