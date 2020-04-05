@@ -39,23 +39,30 @@ class Snake {
         foods.forEach(food => {
             if(Math.abs((food.y + food.grid) - (this.y + this.grid)) <= food.grid && Math.abs((food.x + food.grid) - (this.x + this.grid)) <= food.grid) {
                 this.score++;
-                this.speed += 0.1;
-                food.x = randomInt(this.ctx.canvas.width);
-                food.y = randomInt(this.ctx.canvas.height);
+                this.speed += 0.01;
+                food.x = randomInt(this.ctx.canvas.width - this.grid);
+                food.y = randomInt(this.ctx.canvas.height - this.grid);
                 this.tail.unshift({ x: this.x, y: this.y });
                 console.log(`Score: ${this.score}`);
                 console.log(`Speed: ${this.speed}`);
             }
         });
     }
+
+    crash(callback) {
+        const {width, height} = this.ctx.canvas;
+        // Check if the snake crashed on the wall
+        if(this.x < 0 || this.x >= width - this.grid || this.y < 0 || this.y >= height - this.grid)
+            callback(this);
+    }
 }
 
 class Food {
     constructor(ctx, opt = {}) {
         this.ctx = ctx;
-        this.x = opt.x || randomInt(this.ctx.canvas.width);
-        this.y = opt.y || randomInt(this.ctx.canvas.height);
         this.grid = opt.grid || 20;
+        this.x = opt.x || randomInt(this.ctx.canvas.width - this.grid);
+        this.y = opt.y || randomInt(this.ctx.canvas.height - this.grid);
         this.color = opt.color || "red";
     }
 
@@ -99,17 +106,17 @@ class Keyboard {
         });
     }
 
-    move(caracter) {
+    move(character) {
 
-        if(typeof caracter.move === "function") caracter.move();
+        if(typeof character.move === "function") character.move();
         
-        if(this.up) caracter.y -= caracter.speed;
+        if(this.up) character.y -= character.speed;
 
-        if(this.down) caracter.y += caracter.speed;
+        if(this.down) character.y += character.speed;
         
-        if(this.right) caracter.x += caracter.speed;
+        if(this.right) character.x += character.speed;
         
-        if(this.left) caracter.x -= caracter.speed;
+        if(this.left) character.x -= character.speed;
     }
 
     unpressKeys() { this.up = this.down = this.right = this.left = false; }
@@ -117,11 +124,12 @@ class Keyboard {
 
 (function() {
 
-    let ctx = document.getElementById("game").getContext("2d");
+    const ctx = document.getElementById("game").getContext("2d");
+    const grid = 20;
 
     const keyboard = new Keyboard();
-    const snake = new Snake(ctx);
-    const foods = [new Food(ctx)];
+    const snake = new Snake(ctx, { grid });
+    const foods = [new Food(ctx, { grid })];
 
     keyboard.init();
 
@@ -133,8 +141,9 @@ class Keyboard {
     
     function loop() {
         keyboard.move(snake);
-        snake.eat(foods);
         draw();
+        snake.crash(() => alert('Crashed'));
+        snake.eat(foods);
         requestAnimationFrame(loop);
     }
 
