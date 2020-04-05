@@ -6,8 +6,7 @@ class Snake {
         this.x = opt.x || 0;
         this.y = opt.y || 0;
         this.score = 0;
-        this.width = opt.width || 20,
-        this.height = opt.height || 20;
+        this.grid = opt.grid || 20;
         this.speed = opt.speed || 4;
         this.color = opt.color || "#000";
         this.tail = [];
@@ -17,11 +16,11 @@ class Snake {
         this.ctx.beginPath();
         
         // Draw snake' head
-        this.ctx.rect(this.x, this.y, this.width, this.height);
+        this.ctx.rect(this.x, this.y, this.grid, this.grid);
         
         // Draw snake' tail
         for(let tail of this.tail)
-            this.ctx.rect(tail.x, tail.y, this.width, this.height);
+            this.ctx.rect(tail.x, tail.y, this.grid, this.grid);
         
         this.ctx.fillStyle = this.color;
         this.ctx.fill();
@@ -32,26 +31,22 @@ class Snake {
     move() {
         if(this.tail.length >= 1) {
             this.tail.pop();
-            this.tail.unshift({
-                x: this.x,
-                y: this.y
-            });
+            this.tail.unshift({ x: this.x, y: this.y });
         }
     }
 
-    eat(food) {
-        if(Math.abs((food.y + food.height) - (this.y + this.height)) <= food.height && Math.abs((food.x + food.width) - (this.x + this.width)) <= food.width) {
-            this.score++;
-            this.speed += 0.1;
-            food.x = randomInt(this.ctx.canvas.width);
-            food.y = randomInt(this.ctx.canvas.height);
-            this.tail.unshift({
-                x: this.x,
-                y: this.y
-            });
-            console.log(`Score: ${this.score}`);
-            console.log(`Speed: ${this.speed}`);
-        }
+    eat(foods) {
+        foods.forEach(food => {
+            if(Math.abs((food.y + food.grid) - (this.y + this.grid)) <= food.grid && Math.abs((food.x + food.grid) - (this.x + this.grid)) <= food.grid) {
+                this.score++;
+                this.speed += 0.1;
+                food.x = randomInt(this.ctx.canvas.width);
+                food.y = randomInt(this.ctx.canvas.height);
+                this.tail.unshift({ x: this.x, y: this.y });
+                console.log(`Score: ${this.score}`);
+                console.log(`Speed: ${this.speed}`);
+            }
+        });
     }
 }
 
@@ -60,14 +55,13 @@ class Food {
         this.ctx = ctx;
         this.x = opt.x || randomInt(this.ctx.canvas.width);
         this.y = opt.y || randomInt(this.ctx.canvas.height);
-        this.width = opt.width || 20;
-        this.height = opt.height || 20;
+        this.grid = opt.grid || 20;
         this.color = opt.color || "red";
     }
 
     draw() {
         this.ctx.beginPath();
-        this.ctx.rect(this.x, this.y, this.width, this.height);
+        this.ctx.rect(this.x, this.y, this.grid, this.grid);
         this.ctx.fillStyle = this.color;
         this.ctx.fill();
         this.ctx.closePath();
@@ -127,19 +121,19 @@ class Keyboard {
 
     const keyboard = new Keyboard();
     const snake = new Snake(ctx);
-    const food = new Food(ctx);
+    const foods = [new Food(ctx)];
 
     keyboard.init();
 
     function draw() {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         snake.draw();
-        food.draw();
+        foods.forEach(food => food.draw());
     }
     
     function loop() {
-        snake.eat(food);
         keyboard.move(snake);
+        snake.eat(foods);
         draw();
         requestAnimationFrame(loop);
     }
